@@ -1,0 +1,37 @@
+name: Build SweetPotato
+ 
+on: [push]
+ 
+jobs:
+  build:
+ 
+    runs-on: windows-latest
+ 
+    steps:
+    - uses: actions/checkout@v1
+      name: Checkout Code
+     
+    - name: Setup MSBuild Path
+      uses:  warrenbuckley/Setup-MSBuild@v1
+       
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.2
+      
+      
+    - name: Install Windows 8.1 SDK        
+      shell: powershell
+      run: |
+        Invoke-WebRequest -Method Get -Uri https://go.microsoft.com/fwlink/p/?LinkId=323507 -OutFile sdksetup.exe -UseBasicParsing
+        Start-Process -Wait sdksetup.exe -ArgumentList "/q", "/norestart", "/features", "OptionId.WindowsDesktopSoftwareDevelopmentKit", "OptionId.NetFxSoftwareDevelopmentKit"
+     
+    - name: Restore NuGet Packages
+      run: nuget restore SweetPotato.sln
+ 
+    - name: Build App
+      run: msbuild  SweetPotato.sln /p:Configuration=Release /p:DeployOnBuild=true /p:PublishProfile=FolderProfile
+ 
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: SweetPotato
+        path: "D:/a/newbuild/"
