@@ -34,4 +34,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: SweetPotato
-        path: "D:/a/newbuild/"
+        path: "D:/a/SweetPotato/SweetPotato/bin"
